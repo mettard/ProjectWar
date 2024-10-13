@@ -28,13 +28,18 @@ protected:
 	// Calls on the start of the game
 	virtual void BeginPlay() override;
 	// Called for movement input
-	void MovementCamera();
+	void MovementCameraTriggered();
+	void MovementCameraStarted();
 
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
 	class UInputMappingContext* NewInputMappingContext;
 
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
-	class UInputMappingContext* MovingCamera;
-private:
+	class UInputAction* MovingCamera;
 
+
+private:
+	FVector Result;
+	FVector2D CurrentMousePosition;
+	FVector2D StartMousePosition;
 };
