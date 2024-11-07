@@ -45,6 +45,25 @@ void AMyPlayerController::SetupPlayerInputComponent(class UInputComponent* Playe
 
 void AMyPlayerController::MovementCameraTriggered()
 {
+	if (APlayerController* PlayerController = Cast<APlayerController>(this))
+	{
+		FVector WorldLocation;
+		FVector WorldDirection;
+		FHitResult OutHit;
+		FCollisionQueryParams CollisionParams;
+		PlayerController->DeprojectMousePositionToWorld(WorldLocation, WorldDirection);
+		FVector EndPoint = WorldDirection * 10000.f + WorldLocation;
+
+		DrawDebugLine(GetWorld(), WorldLocation, EndPoint, FColor::Green, true, 2.f, false, 4.f);
+		GetWorld()->LineTraceSingleByChannel(OutHit, WorldLocation, EndPoint, ECC_WorldDynamic, CollisionParams);
+
+		if (OutHit.GetActor()) 
+		{
+
+		}
+	}
+
+
 	CurrentMouseCursor = EMouseCursor::Hand;
 	CurrentMousePosition = UWidgetLayoutLibrary::GetMousePositionOnViewport(GetWorld());
 	FVector2D MinusCurrentAndStartMousePositions = (CurrentMousePosition - StartMousePosition);
