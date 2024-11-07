@@ -37,12 +37,15 @@ void AMyPlayerController::SetupPlayerInputComponent(class UInputComponent* Playe
 	{
 		Input->BindAction(MovingCamera, ETriggerEvent::Triggered, this, &AMyPlayerController::MovementCameraTriggered);
 		Input->BindAction(MovingCamera, ETriggerEvent::Started, this, &AMyPlayerController::MovementCameraStarted);
+		Input->BindAction(MovingCamera, ETriggerEvent::Canceled, this, &AMyPlayerController::MovementCameraCanceled);
+		Input->BindAction(MovingCamera, ETriggerEvent::Completed, this, &AMyPlayerController::MovementCameraCompleted);
 	}
 }
 
 
 void AMyPlayerController::MovementCameraTriggered()
 {
+	CurrentMouseCursor = EMouseCursor::Hand;
 	CurrentMousePosition = UWidgetLayoutLibrary::GetMousePositionOnViewport(GetWorld());
 	FVector2D MinusCurrentAndStartMousePositions = (CurrentMousePosition - StartMousePosition);
 	Result = FVector(MinusCurrentAndStartMousePositions.X*10.0f, MinusCurrentAndStartMousePositions.Y*10.0f, 0);
@@ -55,4 +58,14 @@ void AMyPlayerController::MovementCameraTriggered()
 void AMyPlayerController::MovementCameraStarted()
 {
 	StartMousePosition = UWidgetLayoutLibrary::GetMousePositionOnViewport(GetWorld());
+}
+
+void AMyPlayerController::MovementCameraCanceled()
+{
+	CurrentMouseCursor = EMouseCursor::Default;
+}
+
+void AMyPlayerController::MovementCameraCompleted()
+{
+	CurrentMouseCursor = EMouseCursor::Default;
 }

@@ -30,12 +30,17 @@ protected:
 	// Called for movement input
 	void MovementCameraTriggered();
 	void MovementCameraStarted();
+	void MovementCameraCanceled();
+	void MovementCameraCompleted();
 
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
 	class UInputMappingContext* NewInputMappingContext;
 
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
 	class UInputAction* MovingCamera;
+
+
+
 
 
 private:
