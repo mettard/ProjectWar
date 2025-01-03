@@ -49,18 +49,18 @@ void AMyPlayerController::MovementCameraTriggered()
 	{
 		FVector WorldLocation;
 		FVector WorldDirection;
-		FHitResult OutHit;
-		FCollisionQueryParams CollisionParams;
+		/*FHitResult OutHit;
+		FCollisionQueryParams CollisionParams;*/
 		PlayerController->DeprojectMousePositionToWorld(WorldLocation, WorldDirection);
 		FVector EndPoint = WorldDirection * 10000.f + WorldLocation;
 
-		DrawDebugLine(GetWorld(), WorldLocation, EndPoint, FColor::Green, true, 2.f, false, 4.f);
+		/*DrawDebugLine(GetWorld(), WorldLocation, EndPoint, FColor::Green, true, 2.f, false, 4.f);
 		GetWorld()->LineTraceSingleByChannel(OutHit, WorldLocation, EndPoint, ECC_WorldDynamic, CollisionParams);
 
 		if (OutHit.GetActor()) 
 		{
 
-		}
+		}*/
 	}
 
 
