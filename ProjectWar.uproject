@@ -7,7 +7,11 @@
 		{
 			"Name": "ProjectWar",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine",
+				"AIModule"
+			]
 		}
 	],
 	"Plugins": [
@@ -17,14 +21,6 @@
 		},
 		{
 			"Name": "VisualStudioTools",
-			"Enabled": false
-		},
-		{
-			"Name": "VisualStudioSourceCodeAccess",
-			"Enabled": false
-		},
-		{
-			"Name": "VisualStudioCodeSourceCodeAccess",
 			"Enabled": false
 		}
 	]
