@@ -12,24 +12,22 @@ void AAIControllerBase::BeginPlay()
 	Super::BeginPlay();
 	if (const ACharacterBase* Chr = Cast<ACharacterBase>(GetPawn()))
 	{
-		TeamId = FGenericTeamId(Chr->ID);
+		TeamId = FGenericTeamId(Chr->teamID);
 	}
 }
 
 ETeamAttitude::Type AAIControllerBase::GetTeamAttitudeTowards(const AActor& Other) const
 {
 	//Check if Pawn
-	const APawn* OtherPawn = Cast<APawn>(&Other);
+	const AActor* OtherPawn = Cast<AActor>(&Other);
 	if (OtherPawn == nullptr)
 	{return ETeamAttitude::Neutral;}
 
-	
 	//Check if actor implements GenericTeamAgentInterface
-	const auto PlayerTi = Cast<IGenericTeamAgentInterface>(&Other); // I think error because i cant normally cast
-	const class IGenericTeamAgentInterface* BotTi = Cast<IGenericTeamAgentInterface>(OtherPawn->GetController()); // I think error because i cant normally cast
+	const class IGenericTeamAgentInterface* PlayerTi = Cast<IGenericTeamAgentInterface>(&Other);
+	const class IGenericTeamAgentInterface* BotTi = Cast<IGenericTeamAgentInterface>(OtherPawn); 
 	if (BotTi == nullptr && PlayerTi == nullptr)
 	{return ETeamAttitude::Neutral;} 
-	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Example text that prints a float"), (PlayerTi));
 
 
 	//Get Actor's TeamID
@@ -43,10 +41,11 @@ ETeamAttitude::Type AAIControllerBase::GetTeamAttitudeTowards(const AActor& Othe
 	const FGenericTeamId ThisID = GetGenericTeamId();
 	if (OtherActorTeamID == 8)
 	{return ETeamAttitude::Neutral;}
-	else if (OtherActorTeamID == ThisID)
+	if (OtherActorTeamID == ThisID)
 	{return ETeamAttitude::Friendly;}
-	else
+	if (OtherActorTeamID != ThisID)
 	{return ETeamAttitude::Hostile;}
+	return ETeamAttitude::Neutral;
 }
 
 

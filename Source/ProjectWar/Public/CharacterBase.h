@@ -14,15 +14,18 @@ class PROJECTWAR_API ACharacterBase : public ACharacter, public IAISightTargetIn
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	FGenericTeamId teamID;
+	
+public:
 	// Sets default values for this character's properties
 	ACharacterBase();
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
-	int32 ID = 0;
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	// int32 ID;
 
 	virtual FGenericTeamId GetGenericTeamId() const override { return teamID; }
 
-protected:
-	FGenericTeamId teamID;
+
 	
 };
