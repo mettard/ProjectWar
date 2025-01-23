@@ -1,8 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
-
-#include "AIControllerBase.h"
 #include "CharacterBase.h"
+#include "AIControllerBase.h"
 
 
 
@@ -14,18 +12,19 @@ void AAIControllerBase::BeginPlay()
 	{
 		TeamId = FGenericTeamId(Chr->teamID);
 	}
+	
 }
 
 ETeamAttitude::Type AAIControllerBase::GetTeamAttitudeTowards(const AActor& Other) const
 {
 	//Check if Pawn
-	const AActor* OtherPawn = Cast<AActor>(&Other);
+	const APawn* OtherPawn = Cast<APawn>(&Other);
 	if (OtherPawn == nullptr)
 	{return ETeamAttitude::Neutral;}
 
 	//Check if actor implements GenericTeamAgentInterface
-	const class IGenericTeamAgentInterface* PlayerTi = Cast<IGenericTeamAgentInterface>(&Other);
-	const class IGenericTeamAgentInterface* BotTi = Cast<IGenericTeamAgentInterface>(OtherPawn); 
+	auto PlayerTi = Cast<IGenericTeamAgentInterface>(&Other);
+	class IGenericTeamAgentInterface* BotTi = Cast<IGenericTeamAgentInterface>(OtherPawn->GetController()); 
 	if (BotTi == nullptr && PlayerTi == nullptr)
 	{return ETeamAttitude::Neutral;} 
 
@@ -34,19 +33,17 @@ ETeamAttitude::Type AAIControllerBase::GetTeamAttitudeTowards(const AActor& Othe
 	FGenericTeamId OtherActorTeamID = NULL;
 	if (BotTi != nullptr)
 	{OtherActorTeamID = BotTi->GetGenericTeamId();}
-	else if (PlayerTi != nullptr)
+	if (PlayerTi != nullptr)
 	{OtherActorTeamID = PlayerTi->GetGenericTeamId();}
 	
 	//Check if Hostile
 	const FGenericTeamId ThisID = GetGenericTeamId();
 	if (OtherActorTeamID == 8)
 	{return ETeamAttitude::Neutral;}
-	if (OtherActorTeamID == ThisID)
+	else if (OtherActorTeamID == ThisID)
 	{return ETeamAttitude::Friendly;}
-	if (OtherActorTeamID != ThisID)
+	else
 	{return ETeamAttitude::Hostile;}
-	return ETeamAttitude::Neutral;
 }
-
 
 

@@ -14,12 +14,9 @@ UCLASS()
 class PROJECTWAR_API AAIControllerBase : public AAIController
 {
 	GENERATED_BODY()
-	
-protected:
-	FGenericTeamId TeamId;
-	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
-
 public:
 	virtual FGenericTeamId GetGenericTeamId() const override { return TeamId; };
 	virtual void BeginPlay() override;
+	FGenericTeamId TeamId;
+	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 };
