@@ -7,6 +7,7 @@
 
 void AAIControllerBase::BeginPlay()
 {
+	//Gets Pawn's ID
 	Super::BeginPlay();
 	if (const ACharacterBase* Chr = Cast<ACharacterBase>(GetPawn()))
 	{

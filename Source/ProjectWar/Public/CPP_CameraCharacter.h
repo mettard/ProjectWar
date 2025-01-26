@@ -13,16 +13,9 @@ class PROJECTWAR_API ACPP_CameraCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
 public:	
 	// Sets default values for this character's properties
 	ACPP_CameraCharacter();
-
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

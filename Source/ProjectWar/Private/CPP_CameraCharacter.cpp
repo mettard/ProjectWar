@@ -16,21 +16,6 @@ ACPP_CameraCharacter::ACPP_CameraCharacter()
 	Camera->SetupAttachment(SpringArm);
 
 }
-
-// Called when the game starts or when spawned
-void ACPP_CameraCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void ACPP_CameraCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
 // Called to bind functionality to input
 void ACPP_CameraCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -38,9 +23,9 @@ void ACPP_CameraCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	PlayerInputComponent->BindAxis("Zoom", this, &ACPP_CameraCharacter::Zoom);
 
 }
-
+// Called to Zoom Camera In or Out
 void ACPP_CameraCharacter::Zoom(float AxisValue)
 {
-	SpringArm->TargetArmLength = SpringArm->TargetArmLength + AxisValue * 100;
+	SpringArm->TargetArmLength = SpringArm->TargetArmLength + AxisValue * 200;
 }
 

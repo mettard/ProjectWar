@@ -23,7 +23,7 @@ void AMyPlayerController::BeginPlay()
 	bShowMouseCursor = true;
 }
 
-
+// Called to set up input actions
 void AMyPlayerController::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	if (APlayerController* PlayerController = Cast<APlayerController>(this))
@@ -54,6 +54,8 @@ void AMyPlayerController::MovementCameraTriggered()
 		PlayerController->DeprojectMousePositionToWorld(WorldLocation, WorldDirection);
 		FVector EndPoint = WorldDirection * 10000.f + WorldLocation;
 
+		//Maybe if I will make every blueprint into c++, this will help me
+		
 		/*DrawDebugLine(GetWorld(), WorldLocation, EndPoint, FColor::Green, true, 2.f, false, 4.f);
 		GetWorld()->LineTraceSingleByChannel(OutHit, WorldLocation, EndPoint, ECC_WorldDynamic, CollisionParams);
 
