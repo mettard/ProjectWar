@@ -26,6 +26,6 @@ void ACPP_CameraCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 // Called to Zoom Camera In or Out
 void ACPP_CameraCharacter::Zoom(float AxisValue)
 {
-	SpringArm->TargetArmLength = SpringArm->TargetArmLength + AxisValue * 200;
+	SpringArm->TargetArmLength = SpringArm->TargetArmLength + AxisValue * 100;
 }
 
