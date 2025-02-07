@@ -24,6 +24,9 @@ public:
 
 	virtual FGenericTeamId GetGenericTeamId() const { return teamID; }
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	int32 HP;
+
 
 	
 };
