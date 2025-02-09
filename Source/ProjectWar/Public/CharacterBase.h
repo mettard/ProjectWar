@@ -18,9 +18,6 @@ public:
 	
 	// Sets default values for this character's properties
 	ACharacterBase();
-	
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
-	// int32 ID;
 
 	virtual FGenericTeamId GetGenericTeamId() const { return teamID; }
 
