@@ -65,11 +65,33 @@ void AMyPlayerController::MovementCameraTriggered()
 		}*/
 	}
 
-
+	
 	CurrentMouseCursor = EMouseCursor::Hand;
 	CurrentMousePosition = UWidgetLayoutLibrary::GetMousePositionOnViewport(GetWorld());
 	FVector2D MinusCurrentAndStartMousePositions = (CurrentMousePosition - StartMousePosition);
-	Result = FVector(MinusCurrentAndStartMousePositions.X*10.0f, MinusCurrentAndStartMousePositions.Y*10.0f, 0);
+	ACPP_CameraCharacter* CameraCharacter = Cast<ACPP_CameraCharacter>(GetPawn());
+	if (CameraCharacter)
+	{
+		float CameraCharacterZoom =	CameraCharacter->Camera->OrthoWidth;
+		if (CameraCharacterZoom <= 2000)
+		{
+			Result = FVector(MinusCurrentAndStartMousePositions.X*1.0f, MinusCurrentAndStartMousePositions.Y*1.0f, 0);
+		}
+		if (CameraCharacterZoom >= 2001 && CameraCharacterZoom <= 6000)
+		{
+			Result = FVector(MinusCurrentAndStartMousePositions.X*3.0f, MinusCurrentAndStartMousePositions.Y*3.0f, 0);
+		}
+		if (CameraCharacterZoom >= 6001 && CameraCharacterZoom <= 15000)
+		{
+			Result = FVector(MinusCurrentAndStartMousePositions.X*10.0f, MinusCurrentAndStartMousePositions.Y*10.0f, 0);
+		}
+		if (CameraCharacterZoom >= 15001)
+		{
+			Result = FVector(MinusCurrentAndStartMousePositions.X*20.0f, MinusCurrentAndStartMousePositions.Y*20.0f, 0);
+		}
+		
+	}
+	//Result = FVector(MinusCurrentAndStartMousePositions.X*10.0f, MinusCurrentAndStartMousePositions.Y*10.0f, 0);
 	if (APawn* ControlledPawn = GetPawn())
 	{
 		ControlledPawn->AddActorWorldOffset(Result);

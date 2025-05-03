@@ -21,8 +21,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	UPROPERTY(VisibleAnywhere);
 		USpringArmComponent* SpringArm;
-	UPROPERTY(VisibleAnywhere);
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Camera");
 		UCameraComponent* Camera;
+	
+
 
 private:
 

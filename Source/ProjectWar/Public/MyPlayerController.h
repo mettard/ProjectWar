@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "InputActionValue.h"
+#include "CPP_CameraCharacter.h"
 #include "MyPlayerController.generated.h"
 
 
@@ -23,6 +24,7 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent);
+	
 
 protected:
 	// Calls on the start of the game
@@ -38,7 +40,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
 	class UInputAction* MovingCamera;
-
 
 
 

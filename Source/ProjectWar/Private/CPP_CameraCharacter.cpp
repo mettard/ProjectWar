@@ -14,18 +14,33 @@ ACPP_CameraCharacter::ACPP_CameraCharacter()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("MainCamera"));
 	Camera->SetupAttachment(SpringArm);
-
 }
 // Called to bind functionality to input
 void ACPP_CameraCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	PlayerInputComponent->BindAxis("Zoom", this, &ACPP_CameraCharacter::Zoom);
-
 }
+
 // Called to Zoom Camera In or Out
 void ACPP_CameraCharacter::Zoom(float AxisValue)
 {
-	SpringArm->TargetArmLength = SpringArm->TargetArmLength + AxisValue * 100;
+	if (Camera->OrthoWidth >= 400 && Camera->OrthoWidth <= 2000)
+	{
+		Camera->OrthoWidth += AxisValue * 100;
+	}
+	if (Camera->OrthoWidth >= 2001 && Camera->OrthoWidth <= 6000)
+	{
+		Camera->OrthoWidth += AxisValue * 300;
+	}
+	if (Camera->OrthoWidth >= 6001 && Camera->OrthoWidth <= 20000)
+	{
+		Camera->OrthoWidth += AxisValue * 1400;
+	}
+	if (Camera->OrthoWidth >= 20001 && Camera->OrthoWidth <= 30000)
+	{
+		Camera->OrthoWidth += AxisValue * 2000;
+	}
+	Camera->OrthoWidth = FMath::Clamp(Camera->OrthoWidth, 400, 30000);
 }
 
