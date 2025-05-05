@@ -34,6 +34,8 @@ protected:
  
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTimelineComponent* ZoomTimelineComp;
+	UFUNCTION()
+	void ZoomFinished();
 	virtual void BeginPlay() override;
 
 
@@ -41,6 +43,4 @@ private:
 	FTimeline ZoomTimeline;
 	void Zoom(float AxisValue);
 
-	UFUNCTION()
-		void ZoomFinished();
 };

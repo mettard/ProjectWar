@@ -35,10 +35,11 @@ void ACPP_CameraCharacter::BeginPlay()
 	ProgressUpdate.BindUFunction(this, FName("Zoom"));
 
 	FOnTimelineEvent FinishedEvent;
-	FinishedEvent.BindUFunction(this, FName("ZoomFinished"));
+	FinishedEvent.BindUFunction(this, FName("Zoom"));
 
-	ZoomTimeline.SetTimelineFinishedFunc(FinishedEvent);
-	ZoomTimeline.SetFloatCurve(ZoomCurve, "None");
+	ZoomTimelineComp->SetTimelineFinishedFunc(FinishedEvent);
+	ZoomTimelineComp->SetFloatCurve(ZoomCurve, "None");
+	//ZoomTimelineComp->AddInterpFloat(ZoomCurve, );
 }
 
 // Called to Zoom Camera In or Out
@@ -46,7 +47,7 @@ void ACPP_CameraCharacter::Zoom(float AxisValue)
 {
 	Camera->OrthoWidth = FMath::Clamp(Camera->OrthoWidth, 400, 30000);
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Some debug message!"));
-	if (Camera->OrthoWidth >= 400 && Camera->OrthoWidth <= 2000)
+	/*if (Camera->OrthoWidth >= 400 && Camera->OrthoWidth <= 2000)
 	{
 		Camera->OrthoWidth += AxisValue * 100;
 		ZoomTimeline.Play();
@@ -65,10 +66,21 @@ void ACPP_CameraCharacter::Zoom(float AxisValue)
 	{
 		Camera->OrthoWidth += AxisValue * 2000;
 		ZoomTimeline.Play();
+	}*/
+	if (AxisValue == 1.0f)
+	{
+		ZoomTimelineComp->Reverse();
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Reverse!"));
+	}
+	else if (AxisValue == -1.0f)
+	{
+		ZoomTimelineComp->PlayFromStart();
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Forward!"));
 	}
 }
 
 void ACPP_CameraCharacter::ZoomFinished()
 {
+	Camera->OrthoWidth = FMath::Lerp(700, 1500, 0);
 }
 
