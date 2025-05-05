@@ -6,7 +6,11 @@
 #include "GameFramework/Character.h"
 #include <GameFramework/SpringArmComponent.h>
 #include <Camera/CameraComponent.h>
+#include "Components/TimelineComponent.h"
+#include "Curves/CurveFloat.h"
 #include "CPP_CameraCharacter.generated.h"
+
+class UCurveFloat;
 
 UCLASS()
 class PROJECTWAR_API ACPP_CameraCharacter : public ACharacter
@@ -23,10 +27,20 @@ public:
 		USpringArmComponent* SpringArm;
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Camera");
 		UCameraComponent* Camera;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+		UCurveFloat* ZoomCurve = nullptr;
 	
+protected:
+ 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTimelineComponent* ZoomTimelineComp;
+	virtual void BeginPlay() override;
 
 
 private:
-
+	FTimeline ZoomTimeline;
 	void Zoom(float AxisValue);
+
+	UFUNCTION()
+		void ZoomFinished();
 };

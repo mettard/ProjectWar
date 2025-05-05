@@ -98,6 +98,7 @@ void AMyPlayerController::MovementCameraTriggered()
 	}
 	StartMousePosition = CurrentMousePosition;
 }
+
 void AMyPlayerController::MovementCameraStarted()
 {
 	StartMousePosition = UWidgetLayoutLibrary::GetMousePositionOnViewport(GetWorld());
