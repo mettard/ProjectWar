@@ -94,7 +94,7 @@ void AMyPlayerController::MovementCameraTriggered()
 	//Result = FVector(MinusCurrentAndStartMousePositions.X*10.0f, MinusCurrentAndStartMousePositions.Y*10.0f, 0);
 	if (APawn* ControlledPawn = GetPawn())
 	{
-		ControlledPawn->AddActorWorldOffset(Result);
+		ControlledPawn->AddActorWorldOffset(Result, true);
 	}
 	StartMousePosition = CurrentMousePosition;
 }
