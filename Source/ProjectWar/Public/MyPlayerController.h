@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "InputActionValue.h"
 #include "CPP_CameraCharacter.h"
+#include "BaseWidgetBlueprint.h"
 #include "MyPlayerController.generated.h"
 
 
@@ -24,6 +25,14 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent);
+	// Функція повертає true, якщо було влучання (Hit)
+	UFUNCTION(BlueprintCallable, Category = "Raycast")
+	bool TraceFromMouse(float TraceDistance, FHitResult& OutHit);
+	// Змінна для зберігання класу, з яким будемо порівнювати (сюди оберете BP_TestVehicle в редакторі)
+	UPROPERTY(EditAnywhere, Category = "Config")
+	TSubclassOf<AActor> TargetClass;
+
+	
 	
 
 protected:
@@ -34,12 +43,29 @@ protected:
 	void MovementCameraStarted();
 	void MovementCameraCanceled();
 	void MovementCameraCompleted();
+	void HoldingCtrlStarted();
+	void HoldingCtrlOngoing();
+	void HoldingCtrlCanceled();
+	void HoldingCtrlCompleted();
+	void HoldingShiftStarted();
+	void HoldingShiftOngoing();
+	void HoldingShiftCanceled();
+	void HoldingShiftCompleted();
+	void SendingUnitTriggered();
+	void SelectionActorTriggered();
 
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
 	class UInputMappingContext* NewInputMappingContext;
-
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
 	class UInputAction* MovingCamera;
+	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
+	class UInputAction* SendingUnit;
+	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
+	class UInputAction* SelectionActor;
+	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
+	class UInputAction* HoldingCtrl;
+	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
+	class UInputAction* HoldingShift;
 
 
 
@@ -48,4 +74,11 @@ private:
 	FVector Result;
 	FVector2D CurrentMousePosition;
 	FVector2D StartMousePosition;
+	bool bHoldingCtrl;
+	bool bHoldingShift;
+	bool bSelectedActorsCleared;
+	FHitResult HitResult;
+	AActor* HitActor;
+	AActor* HittedActor;
+	TArray<AActor*> SelectedActors;
 };

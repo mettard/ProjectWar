@@ -11,9 +11,55 @@
 
 AMyPlayerController::AMyPlayerController()
 {
-
 };
 
+
+
+
+
+bool AMyPlayerController::TraceFromMouse(float TraceDistance, FHitResult& OutHit)
+{
+	// 1. Отримуємо контролер гравця
+	APlayerController* PlayerController = Cast<APlayerController>(this);
+	if (!PlayerController)
+	{
+		return false; // Контролер не знайдено
+	}
+
+	// 2. Змінні для збереження результату депроєкції
+	FVector WorldLocation;
+	FVector WorldDirection;
+
+	// Це прямий аналог ноди "Convert Mouse Location To World Space"
+	bool bDeprojectSuccess = PlayerController->DeprojectMousePositionToWorld(WorldLocation, WorldDirection);
+
+	if (bDeprojectSuccess)
+	{
+		// 3. Розрахунок старту та кінця (аналог математики на скріншоті)
+		FVector Start = WorldLocation;
+		FVector End = Start + (WorldDirection * TraceDistance); // TraceDistance це ваші 10000.0
+
+		// 4. Налаштування параметрів трейсу
+		FCollisionQueryParams QueryParams;
+		QueryParams.AddIgnoredActor(this); // Аналог галочки "Ignore Self"
+
+		// 5. Виконання Line Trace (Channel: Visibility)
+		bool bHit = GetWorld()->LineTraceSingleByChannel(
+			OutHit, 
+			Start, 
+			End, 
+			ECC_Visibility, 
+			QueryParams
+		);
+
+		// (Опціонально) Малюємо лінію для дебагу, щоб бачити промінь
+		// DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 2.0f);
+
+		return bHit;
+	}
+
+	return false;
+}
 
 void AMyPlayerController::BeginPlay()
 {
@@ -21,9 +67,9 @@ void AMyPlayerController::BeginPlay()
 
 	SetupPlayerInputComponent(InputComponent);
 	bShowMouseCursor = true;
+	
 }
 
-// Called to set up input actions
 void AMyPlayerController::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	if (APlayerController* PlayerController = Cast<APlayerController>(this))
@@ -39,9 +85,84 @@ void AMyPlayerController::SetupPlayerInputComponent(class UInputComponent* Playe
 		Input->BindAction(MovingCamera, ETriggerEvent::Started, this, &AMyPlayerController::MovementCameraStarted);
 		Input->BindAction(MovingCamera, ETriggerEvent::Canceled, this, &AMyPlayerController::MovementCameraCanceled);
 		Input->BindAction(MovingCamera, ETriggerEvent::Completed, this, &AMyPlayerController::MovementCameraCompleted);
+
+		
+		Input->BindAction(HoldingCtrl, ETriggerEvent::Started, this, &AMyPlayerController::HoldingCtrlStarted);
+		Input->BindAction(HoldingCtrl, ETriggerEvent::Ongoing, this, &AMyPlayerController::HoldingCtrlOngoing);
+		Input->BindAction(HoldingCtrl, ETriggerEvent::Canceled, this, &AMyPlayerController::HoldingCtrlCanceled);
+		Input->BindAction(HoldingCtrl, ETriggerEvent::Completed, this, &AMyPlayerController::HoldingCtrlCompleted);
+		
+		Input->BindAction(HoldingShift, ETriggerEvent::Started, this, &AMyPlayerController::HoldingShiftStarted);
+		Input->BindAction(HoldingShift, ETriggerEvent::Ongoing, this, &AMyPlayerController::HoldingShiftOngoing);
+		Input->BindAction(HoldingShift, ETriggerEvent::Canceled, this, &AMyPlayerController::HoldingShiftCanceled);
+		Input->BindAction(HoldingShift, ETriggerEvent::Completed, this, &AMyPlayerController::HoldingShiftCompleted);
+
+		
+		Input->BindAction(SelectionActor, ETriggerEvent::Triggered, this, &AMyPlayerController::SelectionActorTriggered);
+		//Input->BindAction(SendingUnit, ETriggerEvent::Triggered, this, &AMyPlayerController::SendingUnitTriggered); Continue, when i will make Selected Actors array
 	}
 }
 
+void AMyPlayerController::SelectionActorTriggered()
+{
+	if (TraceFromMouse(0, HitResult))
+	{
+		HitActor = HitResult.GetActor();
+	}
+	
+	if (bHoldingCtrl == true)
+	{
+		SelectedActors.RemoveAt(SelectedActors.Find(HitActor));
+	}
+	else
+	{
+		if (bHoldingShift == true)
+		{
+			SelectedActors.Insert(HitActor,0);
+		}
+		else
+		{
+			if (HitActor->GetClass() == TargetClass)
+			{
+				HittedActor = HitActor;
+				if (SelectedActors[0] != HittedActor)
+				{
+					SelectedActors.RemoveAt(SelectedActors.Find(SelectedActors[0]));
+					SelectedActors.Insert(HittedActor,0);
+					GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("This is the pre-set text"));
+					
+					// Далі треба буде тут дописати логіку для віджета
+				}
+				else
+				{
+					SelectedActors.Insert(HittedActor,0);
+				}
+			}
+			else
+			{
+				for (int32 i = 0; i < SelectedActors.Num(); ++i)
+				{
+					AActor* Actor = SelectedActors[i];
+					if (Actor)
+					{
+						SelectedActors.Empty();
+						bSelectedActorsCleared = true;
+					}
+				}
+			}
+		}
+	}
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("This is the pre-set text"));
+}
+/*Continue, when i will make Selected Actors array
+void AMyPlayerController::SendingUnitTriggered()
+{
+	bool bIsMoving = false;
+	if (bIsMoving == false)
+	{
+		//IsValid()
+	}
+}*/
 
 void AMyPlayerController::MovementCameraTriggered()
 {
@@ -98,20 +219,53 @@ void AMyPlayerController::MovementCameraTriggered()
 	}
 	StartMousePosition = CurrentMousePosition;
 }
-
 void AMyPlayerController::MovementCameraStarted()
 {
 	StartMousePosition = UWidgetLayoutLibrary::GetMousePositionOnViewport(GetWorld());
 }
-
 void AMyPlayerController::MovementCameraCanceled()
 {
 	CurrentMouseCursor = EMouseCursor::Default;
 }
-
 void AMyPlayerController::MovementCameraCompleted()
 {
 	CurrentMouseCursor = EMouseCursor::Default;
 }
+
+void AMyPlayerController::HoldingCtrlStarted()
+{
+	bHoldingCtrl = true;
+}
+void AMyPlayerController::HoldingCtrlOngoing()
+{
+	bHoldingCtrl = true;
+}
+void AMyPlayerController::HoldingCtrlCanceled()
+{
+	bHoldingCtrl = false;
+}
+void AMyPlayerController::HoldingCtrlCompleted()
+{
+	bHoldingCtrl = false;
+}
+
+void AMyPlayerController::HoldingShiftStarted()
+{
+	bHoldingShift = true;
+}
+void AMyPlayerController::HoldingShiftOngoing()
+{
+	bHoldingShift = true;
+}
+void AMyPlayerController::HoldingShiftCanceled()
+{
+	bHoldingShift = false;
+}
+void AMyPlayerController::HoldingShiftCompleted()
+{
+	bHoldingShift = false;
+}
+
+
 
 
